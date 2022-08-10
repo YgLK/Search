@@ -1,4 +1,4 @@
-package org.lucene;
+package org.lucene.thirdTask;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.StopFilter;
@@ -6,8 +6,6 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.queryparser.classic.Token;
-import org.lucene.thirdTask.ConcatenationTokenFilter;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -28,7 +26,12 @@ public class MyAnalyzer extends Analyzer {
     protected TokenStreamComponents createComponents(String fieldName) {
         Tokenizer tokenizer = new WhitespaceTokenizer();
         TokenStream stream = new StopFilter(tokenizer, StopFilter.makeStopSet(stopWords));
-        stream = new ConcatenationTokenFilter(stream);
+        // default delimiter
+//        stream = new ConcatenationTokenFilter(stream);
+        // custom delimiter
+        stream = new ConcatenationTokenFilter(stream, "-");
+        // another custom delimiter
+//        stream = new ConcatenationTokenFilter(stream, "_____test____");
         return new TokenStreamComponents(tokenizer, stream);
     }
 
