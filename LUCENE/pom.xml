@@ -14,9 +14,12 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+<!--    BECAUSE OF WRONG JAVA VERSION DECLARED (1.7 instead of 11) IN THE POM (thanks quickstart archetype :)) some methods didnt compile...
+      remember to update versions and use only updated archetypes - now it works -->
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
   </properties>
+
 
   <dependencies>
 
@@ -40,9 +43,9 @@
 
     <!--    PAIR class -->
     <dependency>
-      <groupId>org.jvnet.sorcerer</groupId>
-      <artifactId>sorcerer-javac</artifactId>
-      <version>0.8</version>
+      <groupId>org.javatuples</groupId>
+      <artifactId>javatuples</artifactId>
+      <version>1.2</version>
     </dependency>
     <!--    PAIR END -->
 
@@ -99,4 +102,5 @@
       </plugins>
     </pluginManagement>
   </build>
+
 </project>

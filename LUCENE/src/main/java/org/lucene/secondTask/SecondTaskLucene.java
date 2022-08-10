@@ -26,6 +26,8 @@ public class SecondTaskLucene {
 
     private static final Logger LOGGER = Logger.getLogger(SecondTaskLucene.class.getName());
 
+    // TODO: 3rd task
+    // TODO: after completing 3rd task answer BONUS questions
 
     public static void main(String[] args) throws IOException, ParseException {
         List<List<String>> fields = new ArrayList<>();
