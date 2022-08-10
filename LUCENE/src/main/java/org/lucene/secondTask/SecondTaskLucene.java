@@ -1,6 +1,5 @@
-package org.lucene;
+package org.lucene.secondTask;
 
-import com.sun.tools.javac.util.Pair;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -14,6 +13,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
+import org.javatuples.Pair;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -26,17 +26,14 @@ public class SecondTaskLucene {
 
     private static final Logger LOGGER = Logger.getLogger(SecondTaskLucene.class.getName());
 
-    // TODO: 3rd task
-    // TODO: after completing 3rd task answer BONUS questions
 
     public static void main(String[] args) throws IOException, ParseException {
         List<List<String>> fields = new ArrayList<>();
         // fieldName, testField or stringField -> "text" or "string", Field.Store.YES/NO
         fields.add(Arrays.asList("fileName", "string", "YES"));
         fields.add(Arrays.asList("fileContent", "text", "YES"));
-        // prepare docs' values
 
-        // THE DATA CAN BE ENTERED WITH KEYBOARD but this way is more convenient
+        // the data can be entered with keyboard input but this way is more convenient
         List<List<String>> fieldValues = new ArrayList<>();
         fieldValues.add(Arrays.asList("file1", "to be or not to be that is the question"));
         fieldValues.add(Arrays.asList("file2", "make a long story short"));
@@ -69,22 +66,14 @@ public class SecondTaskLucene {
         addDocs(w, fields, fieldValues);
         w.close();
 
-//         // display all tokens of the string
-//        displayTokens(analyzer, "see eye to eye");
-
-
         for(Pair<String,Integer> query : queries){
             // 2. query
-            String queryString = query.fst;
-            Integer maxSlop = query.snd;
+            String queryString = query.getValue0();
+            Integer maxSlop = query.getValue1();
 
             // prepare query
             String[] terms = queryString.split(" ");
 
-            System.out.println("TERMS:");
-            for(String term : terms){
-                System.out.println(term);
-            }
             // terms must be an array of strings since there is String... terms parameter in the constructor
             PhraseQuery q = new PhraseQuery(maxSlop,"fileContent", terms);
 
@@ -97,14 +86,19 @@ public class SecondTaskLucene {
             ScoreDoc[] hits = docs.scoreDocs;
 
             // 4. display results
-            System.out.println("- - - - - QUERY: " + queryString + " - slop: " + maxSlop + " - - - - -");
-            System.out.println("Found " + hits.length + " hits.");
-            for(int i=0;i<hits.length;++i) {
-                int docId = hits[i].doc;
+            StringBuilder result = new StringBuilder();
+            StringBuilder resultFiles = new StringBuilder().append("[");
+            for (ScoreDoc hit : hits) {
+                int docId = hit.doc;
                 Document d = searcher.doc(docId);
-                System.out.println((i + 1) + ". " + d.get("fileName"));
+                resultFiles.append(" ").append(d.get("fileName"));
             }
-            System.out.println("- - - - - - - - - - - - - - - - - - - -\n");
+            resultFiles.append(" ]");
+            // prepare result string
+            result.append("\"").append(queryString).append("\"\t").append(maxSlop).append(" - ").append(resultFiles);
+            // print the results
+            System.out.println(result);
+
             // reader can only be closed when there
             // is no need to access the documents anymore.
             reader.close();

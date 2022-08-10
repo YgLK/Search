@@ -1,4 +1,4 @@
-package org.lucene;
+package org.lucene.firstTask;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -19,9 +19,6 @@ public class FirstTaskLucene {
 
     private static final Logger LOGGER = Logger.getLogger(FirstTaskLucene.class.getName());
 
-    // code source
-    //    https://www.lucenetutorial.com/lucene-in-5-minutes.html
-    // (didn't work so couple modifications were done)
 
     // TODO:
     //  - An index schema with a correct analyzer chain. // still to be done

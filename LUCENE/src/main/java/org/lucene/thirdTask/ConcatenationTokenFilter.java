@@ -8,6 +8,8 @@ import java.io.IOException;
 
 public class ConcatenationTokenFilter extends TokenFilter {
 
+    // Tests are placed in the: src/test/java/org/lucene/ThirdTaskTest.java
+
     private final String delimiter;
     private final StringBuffer concatenatedTokensBuffer;
     private final CharTermAttribute charTermAttr;
@@ -29,7 +31,7 @@ public class ConcatenationTokenFilter extends TokenFilter {
     }
 
     @Override
-    public boolean incrementToken() throws IOException {
+    public final boolean incrementToken() throws IOException {
         if (!input.incrementToken()) {
             return false;
         }
