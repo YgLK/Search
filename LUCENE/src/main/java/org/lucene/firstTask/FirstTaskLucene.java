@@ -55,11 +55,15 @@ public class FirstTaskLucene {
 
         for(String query : queries){
             // 2. query
-            String termString = prepareQueryRegexp(query);
+            String termString = prepareQuery(query);
 
             // prepare query
             Query q = new RegexpQuery(new Term("path", termString));
-            LOGGER.info("Query regexp: " + termString);
+            // ALTERNATIVE (remember to change line in the prepareQuery): WildCardQuery:
+//            Query q = new WildcardQuery(new Term("path", termString));
+
+
+            LOGGER.info("Query: " + termString);
             // Solution:
             // to avoid tokenization and keep the input string (in this case path) in one token and match Regexp keep
             // data field as StringField (NOT TextField because TextField is tokenized)
@@ -88,10 +92,12 @@ public class FirstTaskLucene {
         }
     }
 
-    private static String prepareQueryRegexp(String query){
+    private static String prepareQuery(String query){
         String preparedQuery;
         // match all strings which can be reduced to the input query (query's a subsequence of the path)
         preparedQuery = query.replace("", ".*").trim();
+        // when WildCardQuery used uncomment the following line:
+//        preparedQuery = query.replace("", "*").trim();
         return preparedQuery;
     }
 
