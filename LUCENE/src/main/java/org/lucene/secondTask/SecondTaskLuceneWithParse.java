@@ -10,6 +10,7 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.*;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
@@ -22,9 +23,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class SecondTaskLucene {
+public class SecondTaskLuceneWithParse {
 
-    private static final Logger LOGGER = Logger.getLogger(SecondTaskLucene.class.getName());
+    // In this case String query parse() method is used instead of PhraseQuery
+
+    private static final Logger LOGGER = Logger.getLogger(SecondTaskLuceneWithPhraseQuery.class.getName());
 
 
     public static void main(String[] args) throws IOException, ParseException {
@@ -52,7 +55,7 @@ public class SecondTaskLucene {
     }
 
 
-    private static void search(List<List<String>> fields, List<List<String>> fieldValues, List<Pair<String, Integer>> queries) throws IOException {
+    private static void search(List<List<String>> fields, List<List<String>> fieldValues, List<Pair<String, Integer>> queries) throws IOException, ParseException {
         // 0. Specify the analyzer for tokenizing text.
         //    The same analyzer should be used for indexing and searching
         StandardAnalyzer analyzer = new StandardAnalyzer();
@@ -71,18 +74,18 @@ public class SecondTaskLucene {
             String queryString = query.getValue0();
             Integer maxSlop = query.getValue1();
 
-            // prepare query
-            String[] terms = queryString.split(" ");
-
-            // terms must be an array of strings since there is String... terms parameter in the constructor
-            PhraseQuery q = new PhraseQuery(maxSlop,"fileContent", terms);
+            // Parse a simple query that searches for "something that u want to search":
+            QueryParser parser = new QueryParser("fileContent", analyzer);
+            // Query can be parsed with parser by entering Query in string
+            String stringQuery = "\"" + queryString + "\"~" + maxSlop;
+            Query query2 = parser.parse(stringQuery);
 
 
             // 3. search
             int hitsPerPage = 10;
             IndexReader reader = DirectoryReader.open(index);
             IndexSearcher searcher = new IndexSearcher(reader);
-            TopDocs docs = searcher.search(q, hitsPerPage);
+            TopDocs docs = searcher.search(query2, hitsPerPage);
             ScoreDoc[] hits = docs.scoreDocs;
 
             // 4. display results
