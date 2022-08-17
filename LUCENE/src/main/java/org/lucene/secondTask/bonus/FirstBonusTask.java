@@ -34,6 +34,7 @@ public class FirstBonusTask {
         fieldValues.add(Arrays.asList("file1", "to be or not to be that is the question"));
         fieldValues.add(Arrays.asList("file2", "make a long story short"));
         fieldValues.add(Arrays.asList("file3", "see eye to eye"));
+        fieldValues.add(Arrays.asList("file4", "make a long short story"));
 
         // custom query "long story sho*" put in the search() method code
         search(fields, fieldValues);
@@ -60,13 +61,13 @@ public class FirstBonusTask {
         WildcardQuery wildcard = new WildcardQuery(new Term("fileContent", "sho*"));
         SpanQuery spanWildcard = new SpanMultiTermQueryWrapper<>(wildcard);
 
-        //  "long story sho*"
+        //  "long story sho*" when order of words doesn't matter
         SpanNearQuery q = new SpanNearQuery(new SpanQuery[] {
                 new SpanTermQuery(new Term("fileContent", "long")),
                 new SpanTermQuery(new Term("fileContent", "story")),
                 spanWildcard},
                 maxSlop,
-                true);
+                false);
 
         // 3. search
         int hitsPerPage = 10;
