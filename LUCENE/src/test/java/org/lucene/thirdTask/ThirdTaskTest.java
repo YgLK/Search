@@ -1,11 +1,10 @@
-package org.lucene;
+package org.lucene.thirdTask;
 
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.lucene.thirdTask.MyAnalyzer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -55,7 +54,6 @@ public class ThirdTaskTest {
             while (stream.incrementToken()) {
                 System.out.println(termAtt.toString());
             }
-
             stream.end();
         } finally {
             stream.close();
@@ -68,6 +66,7 @@ public class ThirdTaskTest {
                 "it has three audiences: first-time users looking to install Apache Lucene in their application; ";
         printConcatenatedResult(textToConcat);
 
+        LOGGER.info("Before concatenation:\n" + textToConcat);
         LOGGER.info("After concatenation:\n" + outContent);
 
         // \n in the expected string since sout adds new line when printing
@@ -83,6 +82,7 @@ public class ThirdTaskTest {
         String delimiter = "--";
         printConcatenatedResult(textToConcat, delimiter);
 
+        LOGGER.info("Before concatenation:\n" + textToConcat);
         LOGGER.info("After concatenation:\n" + outContent);
 
         // \n in the expected string since sout adds new line when printing

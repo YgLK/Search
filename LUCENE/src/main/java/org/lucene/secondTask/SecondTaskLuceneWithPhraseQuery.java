@@ -1,22 +1,21 @@
 package org.lucene.secondTask;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.*;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.search.*;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.PhraseQuery;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
 import org.javatuples.Pair;
+import org.lucene.CommonMethods;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +24,7 @@ public class SecondTaskLuceneWithPhraseQuery {
 
 
 
-    public static void main(String[] args) throws IOException, ParseException {
+    public static void main(String[] args) throws IOException {
         List<List<String>> fields = new ArrayList<>();
         // fieldName, testField or stringField -> "text" or "string", Field.Store.YES/NO
         fields.add(Arrays.asList("fileName", "string", "YES"));
@@ -61,7 +60,7 @@ public class SecondTaskLuceneWithPhraseQuery {
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
 
         IndexWriter w = new IndexWriter(index, config);
-        addDocs(w, fields, fieldValues);
+        CommonMethods.addDocs(w, fields, fieldValues);
         w.close();
 
         for(Pair<String,Integer> query : queries){
@@ -100,48 +99,6 @@ public class SecondTaskLuceneWithPhraseQuery {
             // reader can only be closed when there
             // is no need to access the documents anymore.
             reader.close();
-        }
-    }
-
-
-    private static void displayTokens(Analyzer analyzer, String text) throws IOException {
-        TokenStream stream = analyzer.tokenStream(null, new StringReader(text));
-        CharTermAttribute cattr = stream.addAttribute(CharTermAttribute.class);
-        stream.reset();
-        while (stream.incrementToken()) {
-            System.out.println(cattr.toString());
-        }
-        stream.end();
-        stream.close();
-    }
-
-
-
-    private static void addDocs(IndexWriter w, List<List<String>> fields, List<List<String>> docsFieldValues) throws IOException {
-
-        for(List<String> docFieldValues : docsFieldValues){
-            Document doc = new Document();
-            for(List<String> fieldData : fields){
-                // get field store enum value
-                Field.Store fieldStore;
-                if(fieldData.get(2).equals("YES")){
-                    fieldStore = Field.Store.YES;
-                } else {
-                    fieldStore = Field.Store.NO;
-                }
-
-                // add doc
-                String fieldName = fieldData.get(0);
-                String fieldValue = docFieldValues.get(fields.indexOf(fieldData));
-                // declare fields
-                if(fieldData.get(1).equals("text")){
-                    doc.add(new TextField(fieldName, fieldValue, fieldStore));
-                } else if(fieldData.get(1).equals("string")){
-                    // use a string field for isbn because we don't want it tokenized
-                    doc.add(new StringField(fieldName, fieldValue, fieldStore));
-                }
-            }
-            w.addDocument(doc);
         }
     }
 }
