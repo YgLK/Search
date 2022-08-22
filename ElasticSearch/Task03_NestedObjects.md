@@ -1,0 +1,71 @@
+### Exercises:
+Create a search request to the blogposts_nested index that returns a document that contains 2 nested documents (both, not 1 of 2):
+
+1. The first one should meet both requirements:
+   a. comments.age = 28 
+   b. comments.stars = 4
+2. The second one should meet both requirements:
+   a. comments.age = 31
+   b. comments.stars = 5
+
+Your request must return 1 document. If you change the value in any of these 4 term queries, it must return nothing.
+
+### Answers:
+
+```javascript
+GET blogposts_nested/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "nested": {
+            "path": "comments",
+            "score_mode": "max",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "match": {
+                      "comments.age": 28
+                    }
+                  },
+                  {
+                    "match": {
+                      "comments.stars": 4
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "nested": {
+            "path": "comments",
+            "score_mode": "max",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "match": {
+                      "comments.age": 31
+                    }
+                  },
+                  {
+                    "match": {
+                      "comments.stars": 5
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+[Helpful link](https://stackoverflow.com/questions/58454773/elasticsearch-must-query-on-nested-fields)
