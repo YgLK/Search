@@ -20,6 +20,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/*
+Done nicely,
+
+Same recommendations as in FirstBonusTask
+ */
 public class SecondBonusTask {
 
 
