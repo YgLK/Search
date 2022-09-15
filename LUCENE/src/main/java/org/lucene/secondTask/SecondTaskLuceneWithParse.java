@@ -23,6 +23,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+
+/**
+ * Overall Lucene query looks good
+ * Same recommendations as from task 1 applies here as well to increase readability and supportability
+ */
 public class SecondTaskLuceneWithParse {
 
     // In this case String query parse() method is used instead of PhraseQuery

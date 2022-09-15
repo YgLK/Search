@@ -20,6 +20,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/*
+Done nicely,
+But it would be better if we can test our solution with other queries as well :)
+
+I think if we can apply recommendations from FirstTaskLucene, that we simply can extend our "Searcher" component with additional methods
+
+In this case `List<String> searchWithPrefix(String query)`
+
+
+ */
 public class FirstBonusTask {
 
 
@@ -58,6 +68,7 @@ public class FirstBonusTask {
         // 2. query
         Integer maxSlop = 0;
 
+        // todo:
         WildcardQuery wildcard = new WildcardQuery(new Term("fileContent", "sho*"));
         SpanQuery spanWildcard = new SpanMultiTermQueryWrapper<>(wildcard);
 

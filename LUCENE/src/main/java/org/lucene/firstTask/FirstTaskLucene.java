@@ -16,17 +16,44 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+/* todo: In general I would recommend to refactor this a little bit
+ It would be great, if we introduce 2 components
+ Indexer -- who will be responsible of loading documents, and creating a lucene index
+         with method to index documents which returns a directory with prepared index
+         `public Directory createIndex(String filePathWithDocuments)`
+
+
+ Searcher -- who will be responsible for searching in the Lucene index
+             Directory can be included in Searcher constructor - so we know when creating a Searcher, which directory we are interested in
+             And searcher have a simple method to get list of matched paths by search string that will hide all implementation details from caller
+             `public List<String> findPaths(String query)`
+
+And in the Test itself, we can Create and Indexer, create Lucene index, Create a searcher based on produced Lucene Index and run assertions
+f.e. with popular hamcrest https://www.baeldung.com/hamcrest-collections-arrays
+
+something similar to this one
+assertThat(searcher.findPaths("searchPhrase"), contains("expectedResult1", "expectedResult2"))
+ */
 public class FirstTaskLucene {
 
     private static final Logger LOGGER = Logger.getLogger(FirstTaskLucene.class.getName());
 
 
     public static void main(String[] args) throws IOException, ParseException {
+
+        // todo: instead of passing around List of Lists Please create a separate structure to hold field information
+        // f.e. class Field(name: path; type: string, store: bool)
+        // In this case we can pass List<Field> and should not remember in other methods which index is responsible for which attribute
         List<List<String>> fields = new ArrayList<>();
         // fieldName, testField or stringField -> "text" or "string", Field.Store.YES/NO
         fields.add(Arrays.asList("path", "string", "YES"));
         // prepare docs' values
+
         List<List<String>> fieldValues = new ArrayList<>();
+        // todo: Instead of using list of lists, and keeping in mind that the value is supposed to be path value, let us introduce a Document class
+        // Document will contain field names and field values
+        // f.e. class Document(fields: Map<String,String>)
+        // Additionally we can add load documents from file - that will make it easy to play around with it.
         fieldValues.add(Collections.singletonList("lucene/queryparser/docs/xml/img/plus.gif"));
         fieldValues.add(Collections.singletonList("lucene/queryparser/docs/xml/img/join.gif"));
         fieldValues.add(Collections.singletonList("lucene/queryparser/docs/xml/img/minusbottom.gif"));
@@ -60,6 +87,9 @@ public class FirstTaskLucene {
             // Query q = new WildcardQuery(new Term("path", termString));
 
 
+            // todo: minor: in the code Logger and Stdout println are mixed.
+            // Is there a specific reason for it? :)
+            // https://jqassistant.org/avoid-usage-system-err-system/ https://www.baeldung.com/java-system-out-println-vs-loggers
             LOGGER.info("Query: " + termString);
             // to avoid tokenization and keep the input string (in this case path) in one token and match Regexp keep
             // data field as StringField (NOT TextField because TextField gets tokenized)
@@ -73,6 +103,10 @@ public class FirstTaskLucene {
             TopDocs docs = searcher.search(q, hitsPerPage);
             ScoreDoc[] hits = docs.scoreDocs;
 
+
+            // todo: instead of just displaying the results, let us us move this to "test" and add asserts in addition to printing results
+            // In this way we can add additional queries easier, and we do not have to verify it works with our eyes
+            // Benifit of using tests is that when you decide to change something in your code - tests will automatically verify if you did not broke something
             // 4. display results
             System.out.println("- - - - - QUERY: " + query + " - - - - -");
             System.out.println("Found " + hits.length + " hits.");

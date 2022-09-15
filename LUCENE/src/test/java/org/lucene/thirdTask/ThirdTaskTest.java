@@ -14,6 +14,12 @@ import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
 
+/*
+todo: Please add End To End test scenario
+
+ Let us add a test case, where we will actually create a Lucene Index by indexer component and use custom analyzer MyAnalyzer
+ Than in runtime, we can make sure that f.e. for phrase in document "this is a phrase" we can match with termQuery with value "this phrase"
+ */
 public class ThirdTaskTest {
 
     private static final Logger LOGGER = Logger.getLogger(ThirdTaskTest.class.getName());

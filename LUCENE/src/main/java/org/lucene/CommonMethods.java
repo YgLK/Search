@@ -30,6 +30,13 @@ public class CommonMethods {
 
                 // add doc
                 String fieldName = fieldData.get(0);
+
+                // if we follow task 2 example, it means that for each value and each field we will add a text or string filed?
+                // f,e, we have 2 fields (fileName, fileContent) and a document ("file1", "some content")
+                // for each pair (fileName, "file1"), (fileName, "some content"), (fileContent, "file1"), (fileContent, "some content)
+                //               code is trying to add a field, with correspondig value.
+                // It means that (fileName, "file1") will be added twice
+                // todo: Question to investigate: what value do we have in "fileName" field right before adding the document to index writer?
                 String fieldValue = docFieldValues.get(fields.indexOf(fieldData));
                 // declare fields
                 if(fieldData.get(1).equals("text")){
