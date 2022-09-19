@@ -1,4 +1,4 @@
-package org.lucene;
+package org.lucene.test;
 
 import org.junit.Before;
 import org.junit.Test;
