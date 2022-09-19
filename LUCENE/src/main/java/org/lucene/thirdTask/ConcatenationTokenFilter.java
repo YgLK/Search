@@ -8,11 +8,11 @@ import java.io.IOException;
 
 public class ConcatenationTokenFilter extends TokenFilter {
 
-    // Tests are placed in the: src/test/java/org/lucene/ThirdTaskTest.java
+    // Tests are placed in the: src/test/java/org/lucene/ThirdTaskTest.java AND src/test/java/org/lucene/ThirdTaskRefactoredTest.java
 
     private final String delimiter;
-    private final StringBuffer concatenatedTokensBuffer;
-    private final CharTermAttribute charTermAttr;
+    private StringBuffer concatenatedTokensBuffer;
+    private CharTermAttribute charTermAttr;
 
 
     protected ConcatenationTokenFilter(TokenStream input) {
@@ -63,6 +63,7 @@ public class ConcatenationTokenFilter extends TokenFilter {
         // following line is responsible for returning token outside the filter
         charTermAttr.copyBuffer(arr, 0, concatenatedTokensBuffer.length());
 
+        concatenatedTokensBuffer = new StringBuffer();
         return true;
     }
 }

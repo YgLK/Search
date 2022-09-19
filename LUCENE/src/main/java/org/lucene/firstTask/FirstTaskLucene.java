@@ -47,6 +47,7 @@ public class FirstTaskLucene {
         List<List<String>> fields = new ArrayList<>();
         // fieldName, testField or stringField -> "text" or "string", Field.Store.YES/NO
         fields.add(Arrays.asList("path", "string", "YES"));
+        Field
         // prepare docs' values
 
         List<List<String>> fieldValues = new ArrayList<>();
