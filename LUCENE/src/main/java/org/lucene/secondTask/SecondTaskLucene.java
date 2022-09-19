@@ -9,14 +9,10 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 
-/**
- * Overall Lucene query looks good
- * Same recommendations as from task 1 applies here as well to increase readability and supportability
- */
-public class SecondTaskLuceneWithParse {
 
-    // In this case String query parse() method is used instead of PhraseQuery
-    private static final Logger LOGGER = Logger.getLogger(SecondTaskLuceneWithParse.class.getName());
+public class SecondTaskLucene {
+
+    private static final Logger LOGGER = Logger.getLogger(SecondTaskLucene.class.getName());
 
 
     public static void main(String[] args) throws Exception {
@@ -56,16 +52,21 @@ public class SecondTaskLuceneWithParse {
 
         // index and search
         Indexer indexer = new Indexer(fields, documents);
-        Searcher searcher = new SecondTaskSearcher(indexer.getIndex());
-        Map<String, List<String>> results = searcher.search(userQueries, "fileContent");
+        Searcher searcher = new Searcher(indexer.getIndex());
+
+        String searchField = "fileContent";
+        Map<String, List<String>> results = new HashMap<>();
+        for(String query : userQueries) {
+            String[] querySlop = query.split(":");
+            String queryString = querySlop[0];
+            int maxSlop = Integer.parseInt(querySlop[1]);
+            results.put(query, searcher.searchWithSlop(queryString, searchField, maxSlop));
+        }
         results.forEach((k, v) -> {
             StringBuilder resString = new StringBuilder();
             resString.append("QUERY: ").append(k).append("\n").append("RESULTS:").append("\n");
             v.forEach(s -> resString.append(s).append("\n"));
             LOGGER.info("\n" + resString);
         });
-
-        // Switch between Query with parsing AND Phrase query
-        // can be done in the SecondTaskSearcher class (search method)
     }
 }
