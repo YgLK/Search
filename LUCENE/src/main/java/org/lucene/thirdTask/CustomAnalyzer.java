@@ -12,7 +12,7 @@ import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 
-public class MyAnalyzer extends Analyzer {
+public class CustomAnalyzer extends Analyzer {
 
     private final String concatenationTokenFilterDelimiter;
 
@@ -22,12 +22,12 @@ public class MyAnalyzer extends Analyzer {
                     "it", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then", "there",
                     "these", "they", "this", "to", "was", "will", "with");
 
-    public MyAnalyzer(){
+    public CustomAnalyzer(){
         // default delimiter
         this.concatenationTokenFilterDelimiter = " ";
     }
 
-    public MyAnalyzer(String delimiter) {
+    public CustomAnalyzer(String delimiter) {
         // custom delimiter
         this.concatenationTokenFilterDelimiter = delimiter;
     }
@@ -41,29 +41,29 @@ public class MyAnalyzer extends Analyzer {
         return new TokenStreamComponents(tokenizer, stream);
     }
 
-
     public static void main(String[] args) throws IOException {
         // text to tokenize
         final String text = "This is a demo of the TokenStream API";
 
-        MyAnalyzer analyzer = new MyAnalyzer("-_-");
+        CustomAnalyzer analyzer = new CustomAnalyzer("-_-");
         TokenStream stream = analyzer.tokenStream("field", new StringReader(text));
 
         // get the CharTermAttribute from the TokenStream
         CharTermAttribute termAtt = stream.addAttribute(CharTermAttribute.class);
 
+        StringBuilder result = new StringBuilder();
         try {
             stream.reset();
 
             // print all tokens until stream is exhausted
             while (stream.incrementToken()) {
-                System.out.println(termAtt.toString());
+                result.append(termAtt.toString());
             }
-
             stream.end();
         } finally {
             stream.close();
         }
+        System.out.println(result);
     }
 }
  

@@ -1,0 +1,32 @@
+{
+  "fields": [
+    {
+      "name": "fileName",
+      "type": "string",
+      "fieldStore": true
+    },
+    {
+      "name": "fileContent",
+      "type": "text",
+      "fieldStore": true
+    }
+  ],
+  "data": [
+    {
+      "fileName": "file1",
+      "fileContent": "to be or not to be that is the question"
+    },
+    {
+      "fileName": "file2",
+      "fileContent": "make a long story short"
+    },
+    {
+      "fileName": "file3",
+      "fileContent": "long story shoe make"
+    },
+    {
+      "fileName": "file4",
+      "fileContent": "make long short story"
+    }
+  ]
+}
