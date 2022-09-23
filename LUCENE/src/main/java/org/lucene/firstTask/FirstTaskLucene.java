@@ -5,24 +5,6 @@ import org.lucene.*;
 import java.util.*;
 import java.util.logging.Logger;
 
-/* todo: In general I would recommend to refactor this a little bit
- It would be great, if we introduce 2 components
- Indexer -- who will be responsible of loading documents, and creating a lucene index
-         with method to index documents which returns a directory with prepared index
-         `public Directory createIndex(String filePathWithDocuments)`
-
-
- Searcher -- who will be responsible for searching in the Lucene index
-             Directory can be included in Searcher constructor - so we know when creating a Searcher, which directory we are interested in
-             And searcher have a simple method to get list of matched paths by search string that will hide all implementation details from caller
-             `public List<String> findPaths(String query)`
-
-And in the Test itself, we can Create and Indexer, create Lucene index, Create a searcher based on produced Lucene Index and run assertions
-f.e. with popular hamcrest https://www.baeldung.com/hamcrest-collections-arrays
-
-something similar to this one
-assertThat(searcher.findPaths("searchPhrase"), contains("expectedResult1", "expectedResult2"))
- */
 public class FirstTaskLucene {
 
     private static final Logger LOGGER = Logger.getLogger(FirstTaskLucene.class.getName());

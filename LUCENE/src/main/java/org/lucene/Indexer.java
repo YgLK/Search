@@ -10,8 +10,15 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +27,23 @@ public class Indexer {
     private Analyzer analyzer;
     private Map<String, CustomField> fields;
     private List<CustomDocument> documents;
+
+    public Indexer(String filePathWithDocuments) {
+        this(filePathWithDocuments, new StandardAnalyzer());
+    }
+
+    public Indexer(String filePathWithDocuments, Analyzer _analyzer){
+        // extract fields and documents from file
+        HashMap<String, Object> indexerData = readDataFromFile(filePathWithDocuments);
+        this.fields =  (Map<String, CustomField>) indexerData.get("fields");
+        this.documents =  (List<CustomDocument>) indexerData.get("documents");
+        this.analyzer = _analyzer;
+        try {
+            this.index = createIndex();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public Indexer(Map<String, CustomField> _fields, List<CustomDocument> _documents){
         this(_fields, _documents, new StandardAnalyzer());
@@ -36,6 +60,58 @@ public class Indexer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private HashMap<String, Object> readDataFromFile(String filePathWithDocuments) {
+        HashMap<String, CustomField> extractedFields = new HashMap<>();
+        List<CustomDocument> extractedDocuments = new ArrayList<>();
+
+        JSONArray arr;
+        try {
+            JSONParser parser = new JSONParser();
+            Object obj  = parser.parse(new FileReader(filePathWithDocuments));
+            arr = new JSONArray();
+            arr.add(obj);
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        // retrieve object with data from json file
+        JSONObject jsonObj  = (JSONObject) arr.get(0);
+
+        // add fields
+        JSONArray fieldsData = (JSONArray) jsonObj.get("fields");
+        for (Object o : fieldsData)
+        {
+            JSONObject field = (JSONObject) o;
+
+            String name = (String) field.get("name");
+            String type = (String) field.get("type");
+            Boolean fieldStore = (Boolean) field.get("fieldStore");
+
+            extractedFields.put(
+                    name,
+                    new CustomField(name, type, fieldStore)
+            );
+        }
+
+        // add documents
+        JSONArray documentsData = (JSONArray) jsonObj.get("data");
+
+        for (Object o : documentsData)
+        {
+            JSONObject document = (JSONObject) o;
+            CustomDocument customDocument = new CustomDocument();
+            for(String fieldName : extractedFields.keySet()){
+                customDocument.addField(fieldName, (String) document.get(fieldName));
+            }
+            extractedDocuments.add(customDocument);
+        }
+        // return map with indexer data
+        HashMap<String, Object> indexerData = new HashMap<>();
+        indexerData.put("fields", extractedFields);
+        indexerData.put("documents", extractedDocuments);
+        return indexerData;
     }
 
     public Directory createIndex() throws IOException {
